@@ -13,10 +13,18 @@ program farmville {
  	game.addVisualCharacter(hector)
 
 	//acciones
-	keyboard.m().onPressDo({hector.sembrar(new Maiz())})
-	keyboard.t().onPressDo({hector.sembrar(new Trigo())})
-	keyboard.o().onPressDo({hector.sembrar(new Tomaco())})
- 	
+	keyboard.m().onPressDo({
+		hector.sembrar( new Planta(tipoDePlanta = new Maiz()) )
+	})
+	keyboard.t().onPressDo({
+		hector.sembrar( new Planta(tipoDePlanta = new Trigo()) )
+	})
+	keyboard.o().onPressDo({
+		hector.sembrar( new Planta(tipoDePlanta = new Tomaco()) )
+	})
+
+	keyboard.r().onPressDo({ hector.regar() })
+
  	//  COMIENZA
 	game.start()
 }

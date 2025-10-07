@@ -46,7 +46,7 @@ _OJO_ si se pone en la misma posición p.ej. dos plantas de maíz, entonces al r
 
 ### Regar
 Una vez sembrado un cultivo, para que crezca debe ser regado. 
-Cuando presionamos la R, se  debe regar la planta que está en la misma posición que el personaje.
+Cuando presionamos la R, se debe regar la planta que está en la misma posición que el personaje.
 Si no hay una planta, tirar una excepción indicando "no tengo nada para regar".
 
 Qué pasa cuando se riega una planta: 

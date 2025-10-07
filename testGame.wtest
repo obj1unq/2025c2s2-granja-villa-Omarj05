@@ -4,9 +4,9 @@ import cultivos.*
 import personaje.*
 
 describe "Hector puede sembrar cuando hay parcela libre" {
-    const maiz = new Maiz()
-    const tomaco = new Tomaco()
-    const trigo = new Trigo()
+    const maiz = new Planta(tipoDePlanta = new Maiz())
+    const tomaco = new Planta(tipoDePlanta = new Tomaco())
+    const trigo = new Planta(tipoDePlanta = new Trigo())
 
     method initialize() {
         game.title("La granja")
@@ -16,60 +16,130 @@ describe "Hector puede sembrar cuando hay parcela libre" {
     }
 
     test "hector puede sembrar maiz" {
-        assert.that(hector.puedeSembrar())
+        assert.that(hector.esParcelaVacia())
         hector.sembrar(maiz)
 
-        assert.that(game.colliders(hector).contains(maiz))
+        assert.that(hector.esParcelaConPlanta(maiz))
 
         hector.position(game.center().down(1))
 
-        assert.that(hector.puedeSembrar())
+        assert.that(hector.esParcelaVacia())
 
-        const maiz2 = new Maiz()
+        const maiz2 = new Planta(tipoDePlanta = new Maiz())
         hector.sembrar(maiz2)
-        assert.that(game.colliders(hector).contains(maiz2))
+        assert.that(hector.esParcelaConPlanta(maiz2))
 
         hector.position(game.center())
 
-        assert.notThat(hector.puedeSembrar())
+        assert.notThat(hector.esParcelaVacia())
     }
 
     test "hector puede sembrar trigo" {
-        assert.that(hector.puedeSembrar())
+        assert.that(hector.esParcelaVacia())
         hector.sembrar(trigo)
 
-        assert.that(game.colliders(hector).contains(trigo))
+        assert.that(hector.esParcelaConPlanta(trigo))
 
         hector.position(game.center().down(1))
 
-        assert.that(hector.puedeSembrar())
+        assert.that(hector.esParcelaVacia())
 
-        const trigo2 = new Trigo()
+        const trigo2 = new Planta(tipoDePlanta = new Trigo())
         hector.sembrar(trigo2)
-        assert.that(game.colliders(hector).contains(trigo2))
+        assert.that(hector.esParcelaConPlanta(trigo2))
 
         hector.position(game.center())
 
-        assert.notThat(hector.puedeSembrar())
+        assert.notThat(hector.esParcelaVacia())
     }
 
     test "hector puede sembrar tomaco" {
-        assert.that(hector.puedeSembrar())
+        assert.that(hector.esParcelaVacia())
         hector.sembrar(tomaco)
 
         assert.that(game.colliders(hector).contains(tomaco))
 
         hector.position(game.center().down(1))
 
-        assert.that(hector.puedeSembrar())
+        assert.that(hector.esParcelaVacia())
 
-        const tomaco2 = new Tomaco()
+        const tomaco2 = new Planta(tipoDePlanta = new Tomaco())
         hector.sembrar(tomaco2)
-        assert.that(game.colliders(hector).contains(tomaco2))
+        assert.that(hector.esParcelaConPlanta(tomaco2))
 
         hector.position(game.center())
 
-        assert.notThat(hector.puedeSembrar())
+        assert.notThat(hector.esParcelaVacia())
+    }
+
+    test "hector no puede sembrar en una parcela que ya tiene una planta" {
+        hector.sembrar(tomaco)
+        assert.throwsExceptionWithMessage(
+            "No puede sembrar aqui.", 
+            {hector.sembrar(maiz)}
+        )
     }
 }
+
+describe "hector puede regar" {
+    method initialize() {
+        game.title("La granja")
+        game.height(10)
+        game.width(10)
+        game.ground("ground.png")
+    }
+
+    test "fases de evolucion en el trigo" {
+        var trigo = new Planta(tipoDePlanta = new Trigo())
+
+        assert.equals(0, trigo.faseDeEvolucion())
+        assert.equals("wheat_0.png", trigo.image())
+
+        trigo.regar()
+        assert.equals(1, trigo.faseDeEvolucion())
+        assert.equals("wheat_1.png", trigo.image())
+
+        trigo.regar()
+        assert.equals(2, trigo.faseDeEvolucion())
+        assert.equals("wheat_2.png", trigo.image())
+
+        trigo.regar()
+        assert.equals(3, trigo.faseDeEvolucion())
+        assert.equals("wheat_3.png", trigo.image())
+
+        trigo.regar()
+        assert.equals(0, trigo.faseDeEvolucion())
+        assert.equals("wheat_0.png", trigo.image())
+    }
+
+    test "fases de evolucion del tomaco" {
+         var tomaco = new Planta(tipoDePlanta = new Tomaco())
+
+        assert.equals(faseBebe, tomaco.faseDeEvolucion())
+        assert.equals("tomaco_baby.png", tomaco.image())
+
+        tomaco.regar()
+        assert.equals(faseAdulta, tomaco.faseDeEvolucion())
+        assert.equals("tomaco_adult.png", tomaco.image())
+    }
+
+    test "fases de evolucion del maiz" {
+         var maiz = new Planta(tipoDePlanta = new Maiz())
+
+        assert.equals(faseBebe, maiz.faseDeEvolucion())
+        assert.equals("corn_baby.png", maiz.image())
+
+        maiz.regar()
+        assert.equals(faseAdulta, maiz.faseDeEvolucion())
+        assert.equals("corn_adult.png", maiz.image())
+    }
+
+    test "hector no puede regar en una parcela vacia" {
+        assert.throwsExceptionWithMessage(
+            "No tengo nada para regar.", 
+            {hector.regar()}
+        )
+    }
+}
+
 

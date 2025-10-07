@@ -5,10 +5,32 @@ object hector {
 	const property image = "mplayer.png"
 
 	method sembrar(planta) { 
-		if (self.puedeSembrar()) {
-			planta.sembrar() 
+		self.validarSiembra()
+		planta.sembrar() 
+	}
+
+	method regar() {
+		self.validarRiego()
+		self.plantaQueColisiona().regar()
+	}
+
+	method plantaQueColisiona() { return game.uniqueCollider(self) }
+
+	method esParcelaConPlanta(planta) {
+		return self.plantaQueColisiona() == planta
+	}
+
+	method esParcelaVacia() { return game.colliders(self).isEmpty() }
+
+	method validarRiego() {
+		if (self.esParcelaVacia()) {
+			self.error("No tengo nada para regar.")
 		}
 	}
 
-	method puedeSembrar() { return game.colliders(self).isEmpty() }
+	method validarSiembra() {
+		if (!self.esParcelaVacia()) {
+			self.error("No puede sembrar aqui.")
+		}
+	}
 }
