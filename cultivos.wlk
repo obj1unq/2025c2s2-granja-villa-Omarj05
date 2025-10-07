@@ -21,6 +21,12 @@ class Planta {
 	method crecer() { 
 		tipoDePlanta.faseDeEvolucion(tipoDePlanta.proximaFaseDeEvolucion()) 
 	}
+
+	method cosechar() {
+		if (tipoDePlanta.estaListaParaCosechar()) {
+			game.removeVisual(self)
+		}
+	}
 }
 
 class Maiz {
@@ -30,6 +36,8 @@ class Maiz {
 	method image() { return "corn_" + faseDeEvolucion.nombre() + ".png" }
 
 	method proximaFaseDeEvolucion() { return faseAdulta }
+
+	method estaListaParaCosechar() { return faseDeEvolucion == faseAdulta }
 }
 
 class Trigo {
@@ -37,23 +45,26 @@ class Trigo {
 	
 	method image() { return "wheat_" + faseDeEvolucion + ".png" }
 
-	method regar() { faseDeEvolucion = self.proximaFaseDeEvolucion() }
-
 	method proximaFaseDeEvolucion() {
 		return (faseDeEvolucion +1) * ((3 - faseDeEvolucion).max(0).min(1))
 	}
+
+	method estaListaParaCosechar() { return faseDeEvolucion >= 2 }
 }
 
 class Tomaco {
+	/*ACLARACION: 
+		Quise hacerlo con fase bebe y fase adulta pero si se desea que siempre esté
+		en fase	adulta hay que cambiar la variable faseDeEvolucion por una constante 
+		en faseAdulta.
+	*/
 	var property faseDeEvolucion = faseBebe
 	
 	method image() { return "tomaco_" + faseDeEvolucion.nombre() + ".png" }
 
-	method regar() {
-		faseDeEvolucion = faseAdulta
-	}
-
 	method proximaFaseDeEvolucion() { return faseAdulta }
+
+	method estaListaParaCosechar() { return faseDeEvolucion == faseAdulta }
 }
 
 object faseBebe { method nombre() { return "baby" } }

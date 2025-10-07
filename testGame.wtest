@@ -142,4 +142,71 @@ describe "hector puede regar" {
     }
 }
 
+describe "hector puede cosechar" {
+    var maiz = new Planta(tipoDePlanta = new Maiz())
+    var tomaco = new Planta(tipoDePlanta = new Tomaco())
+    var trigo = new Planta(tipoDePlanta = new Trigo())
 
+    method initialize() {
+        game.title("La granja")
+        game.height(10)
+        game.width(10)
+        game.ground("ground.png")
+    }
+
+    test "hector puede cosechar el maiz" {
+        hector.sembrar(maiz)
+        assert.notThat(maiz.tipoDePlanta().estaListaParaCosechar())
+
+        hector.regar()
+        assert.that(maiz.tipoDePlanta().estaListaParaCosechar())
+
+        hector.cosechar()
+
+        assert.that(hector.esParcelaVacia())
+        assert.that(hector.plantasCosechadas().contains(maiz))
+    }
+
+    test "hector puede cosechar el tomaco" {
+        hector.sembrar(tomaco)
+        assert.notThat(tomaco.tipoDePlanta().estaListaParaCosechar())
+
+        hector.regar()
+        assert.that(tomaco.tipoDePlanta().estaListaParaCosechar())
+
+        hector.cosechar()
+
+        assert.that(hector.esParcelaVacia())
+        assert.that(hector.plantasCosechadas().contains(tomaco))
+    }
+
+    test "hector puede cosechar el trigo" {
+        hector.sembrar(trigo)
+        assert.equals(0, trigo.faseDeEvolucion())
+        assert.notThat(trigo.tipoDePlanta().estaListaParaCosechar())
+
+        hector.regar()
+        assert.equals(1, trigo.faseDeEvolucion())
+        assert.notThat(trigo.tipoDePlanta().estaListaParaCosechar())
+
+        hector.regar()
+        assert.equals(2, trigo.faseDeEvolucion())
+        assert.that(trigo.tipoDePlanta().estaListaParaCosechar())
+
+        hector.regar()
+        assert.equals(3, trigo.faseDeEvolucion())
+        assert.that(trigo.tipoDePlanta().estaListaParaCosechar())
+
+        hector.cosechar()
+
+        assert.that(hector.esParcelaVacia())
+        assert.that(hector.plantasCosechadas().contains(trigo))
+    }
+
+    test "hector no puede cosechar si la parcela esta vacia" {
+        assert.throwsExceptionWithMessage(
+            "No tengo nada para cosechar aqui.", 
+            {hector.cosechar()}
+        )
+    }
+}
