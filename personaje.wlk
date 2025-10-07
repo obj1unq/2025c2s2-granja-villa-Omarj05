@@ -1,4 +1,5 @@
 import wollok.game.*
+import aspersor.*
 
 object hector {
 	var property position = game.center()
@@ -26,6 +27,11 @@ object hector {
 	method venderTodoLoCosechado() {
 		oroAlmacenado += self.totalAVender()
 		plantasCosechadas.clear()
+	}
+
+	method ponerAspersor() {
+		const aspersor = new Aspersor()
+		aspersor.activar()
 	}
 
 	//consultas

@@ -2,6 +2,7 @@ import wollok.game.*
 import gameGranjaVilla.*
 import cultivos.*
 import personaje.*
+import aspersor.*
 
 describe "Hector puede sembrar cuando hay parcela libre" {
     const maiz = new Planta(tipoDePlanta = new Maiz())
@@ -272,5 +273,46 @@ describe "hector puede vender lo cosechado" {
             "Tengo 150 monedas, y 1 planta/s para vender.",
             hector.mensajeSobreCantidadDeOroYPlantasCosechadas()
             )
+    }
+}
+
+describe "aspersor" {
+    var maiz = new Planta(tipoDePlanta = new Maiz())
+    var tomaco = new Planta(tipoDePlanta = new Tomaco())
+    var trigo = new Planta(tipoDePlanta = new Trigo())
+
+    method initialize() {
+        game.title("La granja")
+        game.height(10)
+        game.width(10)
+        game.ground("ground.png")
+    }
+
+    method sembrarPlantasAlRededor() {
+        hector.position(game.center().down(1))
+        hector.sembrar(maiz)
+        hector.position(game.center().up(1))
+        hector.sembrar(tomaco)
+        hector.position(game.center().left(1))
+        hector.sembrar(trigo)
+    }
+
+    method posicionesDePlantasSembradas() {
+        return [game.center().down(1), game.center().left(1), game.center().up(1)]
+    }
+
+    test "hola" {
+        var aspersor = new Aspersor()
+        self.sembrarPlantasAlRededor()
+        
+
+        assert.equals(maiz, aspersor.plantaEn(game.center().down(1)))
+        assert.notThat(aspersor.esParcelaVaciaEn(game.center().down(1)))
+
+        assert.that(aspersor.esParcelaVaciaEn(game.center().right(1)))
+
+        assert.that(aspersor.posicionesDePlantasLindantes().contains(game.center().down(1)))
+        assert.that(aspersor.posicionesDePlantasLindantes().contains(game.center().left(1)))
+        assert.that(aspersor.posicionesDePlantasLindantes().contains(game.center().up(1)))
     }
 }

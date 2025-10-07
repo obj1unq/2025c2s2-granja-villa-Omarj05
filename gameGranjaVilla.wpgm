@@ -29,6 +29,7 @@ program farmville {
 	keyboard.space().onPressDo({ 
 		game.say(hector, hector.mensajeSobreCantidadDeOroYPlantasCosechadas()) 
 	})
+	keyboard.a().onPressDo({hector.ponerAspersor()})
 
  	//  COMIENZA
 	game.start()
