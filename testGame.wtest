@@ -210,3 +210,67 @@ describe "hector puede cosechar" {
         )
     }
 }
+
+describe "hector puede vender lo cosechado" {
+    var maiz = new Planta(tipoDePlanta = new Maiz())
+    var tomaco = new Planta(tipoDePlanta = new Tomaco())
+    var trigo = new Planta(tipoDePlanta = new Trigo())
+
+    method initialize() {
+        game.title("La granja")
+        game.height(10)
+        game.width(10)
+        game.ground("ground.png")
+    }
+    
+    method sembrarYCosechar(planta) {
+        hector.sembrar(planta)
+        hector.regar()
+        hector.regar()
+        hector.regar()
+        hector.cosechar()
+    }
+
+    test "hector puede vender lo que cosechó" {
+        self.sembrarYCosechar(maiz)
+        assert.equals(1, hector.cantidadDePlantasCosechadas())
+        hector.venderTodoLoCosechado()
+        assert.equals(150, hector.oroAlmacenado())
+
+        self.sembrarYCosechar(tomaco)
+        hector.venderTodoLoCosechado()
+        assert.equals(230, hector.oroAlmacenado())
+    }
+
+    test "hector puede vender trigo segun fase de evolucion" {
+        hector.sembrar(trigo)
+        hector.regar()
+        hector.regar()
+        hector.cosechar()
+        hector.venderTodoLoCosechado()
+        assert.equals(100, hector.oroAlmacenado())
+
+        const trigo2 = new Planta(tipoDePlanta = new Trigo())
+        hector.sembrar(trigo2)
+        hector.regar()
+        hector.regar()
+        hector.regar()
+        hector.cosechar()
+        hector.venderTodoLoCosechado()
+        assert.equals(300, hector.oroAlmacenado())
+    }
+
+    test "hector puede decir la cantidad de oro y plantas cosechadas" {
+        self.sembrarYCosechar(maiz)
+        assert.equals(1, hector.cantidadDePlantasCosechadas())
+        hector.venderTodoLoCosechado()
+        assert.equals(150, hector.oroAlmacenado())
+
+        self.sembrarYCosechar(tomaco)
+
+        assert.equals(
+            "Tengo 150 monedas, y 1 planta/s para vender.",
+            hector.mensajeSobreCantidadDeOroYPlantasCosechadas()
+            )
+    }
+}

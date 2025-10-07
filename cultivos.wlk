@@ -4,6 +4,9 @@ import personaje.*
 class Planta {
 	var property tipoDePlanta
 	var position = game.origin()
+	const property valor = tipoDePlanta.valor()
+
+	method valor() { return tipoDePlanta.valor() }
 
 	method position() { return position }
 
@@ -33,6 +36,8 @@ class Maiz {
 	var position = game.origin()
 	var property faseDeEvolucion = faseBebe
 	
+	method valor() { return 150 }
+
 	method image() { return "corn_" + faseDeEvolucion.nombre() + ".png" }
 
 	method proximaFaseDeEvolucion() { return faseAdulta }
@@ -42,6 +47,8 @@ class Maiz {
 
 class Trigo {
 	var property faseDeEvolucion = 0
+	
+	method valor() { return (faseDeEvolucion -1) * 100 }
 	
 	method image() { return "wheat_" + faseDeEvolucion + ".png" }
 
@@ -59,6 +66,8 @@ class Tomaco {
 		en faseAdulta.
 	*/
 	var property faseDeEvolucion = faseBebe
+
+	method valor() { return 80 }
 	
 	method image() { return "tomaco_" + faseDeEvolucion.nombre() + ".png" }
 
