@@ -1,0 +1,75 @@
+import wollok.game.*
+import gameGranjaVilla.*
+import cultivos.*
+import personaje.*
+
+describe "Hector puede sembrar cuando hay parcela libre" {
+    const maiz = new Maiz()
+    const tomaco = new Tomaco()
+    const trigo = new Trigo()
+
+    method initialize() {
+        game.title("La granja")
+        game.height(10)
+        game.width(10)
+        game.ground("ground.png")
+    }
+
+    test "hector puede sembrar maiz" {
+        assert.that(hector.puedeSembrar())
+        hector.sembrar(maiz)
+
+        assert.that(game.colliders(hector).contains(maiz))
+
+        hector.position(game.center().down(1))
+
+        assert.that(hector.puedeSembrar())
+
+        const maiz2 = new Maiz()
+        hector.sembrar(maiz2)
+        assert.that(game.colliders(hector).contains(maiz2))
+
+        hector.position(game.center())
+
+        assert.notThat(hector.puedeSembrar())
+    }
+
+    test "hector puede sembrar trigo" {
+        assert.that(hector.puedeSembrar())
+        hector.sembrar(trigo)
+
+        assert.that(game.colliders(hector).contains(trigo))
+
+        hector.position(game.center().down(1))
+
+        assert.that(hector.puedeSembrar())
+
+        const trigo2 = new Trigo()
+        hector.sembrar(trigo2)
+        assert.that(game.colliders(hector).contains(trigo2))
+
+        hector.position(game.center())
+
+        assert.notThat(hector.puedeSembrar())
+    }
+
+    test "hector puede sembrar tomaco" {
+        assert.that(hector.puedeSembrar())
+        hector.sembrar(tomaco)
+
+        assert.that(game.colliders(hector).contains(tomaco))
+
+        hector.position(game.center().down(1))
+
+        assert.that(hector.puedeSembrar())
+
+        const tomaco2 = new Tomaco()
+        hector.sembrar(tomaco2)
+        assert.that(game.colliders(hector).contains(tomaco2))
+
+        hector.position(game.center())
+
+        assert.notThat(hector.puedeSembrar())
+    }
+}
+
