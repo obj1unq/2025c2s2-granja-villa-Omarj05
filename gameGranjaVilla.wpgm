@@ -13,16 +13,9 @@ program farmville {
  	game.addVisualCharacter(hector)
 
 	//acciones
-	keyboard.m().onPressDo({
-		hector.sembrar( new Planta(tipoDePlanta = new Maiz()) )
-	})
-	keyboard.t().onPressDo({
-		hector.sembrar( new Planta(tipoDePlanta = new Trigo()) )
-	})
-	keyboard.o().onPressDo({
-		hector.sembrar( new Planta(tipoDePlanta = new Tomaco()) )
-	})
-
+	keyboard.m().onPressDo({ hector.sembrar( factoryMaiz.crear() )})
+	keyboard.t().onPressDo({ hector.sembrar( factoryTrigo.crear() )})
+	keyboard.o().onPressDo({ hector.sembrar( factoryTomaco.crear() )})
 	keyboard.r().onPressDo({ hector.regar() })
 	keyboard.c().onPressDo({ hector.cosechar() })
 	keyboard.v().onPressDo({ hector.venderTodoLoCosechado() })

@@ -1,4 +1,6 @@
 import personaje.*
+import wollok.game.*
+
 class Aspersor {
     var property position = hector.position()
     const property image = "aspersor.png"

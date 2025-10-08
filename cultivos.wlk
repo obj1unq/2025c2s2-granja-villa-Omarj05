@@ -3,7 +3,7 @@ import personaje.*
 
 class Planta {
 	var property tipoDePlanta
-	var position = game.origin()
+	var position
 	const property valor = tipoDePlanta.valor()
 
 	method valor() { return tipoDePlanta.valor() }
@@ -15,7 +15,6 @@ class Planta {
 	method image() { return tipoDePlanta.image() }
 
 	method sembrar() {
-		position = hector.position()
 		game.addVisual(self)
 	}
 
@@ -79,3 +78,15 @@ class Tomaco {
 object faseBebe { method nombre() { return "baby" } }
 
 object faseAdulta { method nombre() { return "adult" } }
+
+object factoryTomaco {
+	method crear() { return new Planta(tipoDePlanta = new Tomaco(), position = hector.position())}
+}
+
+object factoryTrigo {
+	method crear() { return new Planta(tipoDePlanta = new Trigo(), position = hector.position())}
+}
+
+object factoryMaiz {
+	method crear() { return new Planta(tipoDePlanta = new Maiz(), position = hector.position())}
+}
