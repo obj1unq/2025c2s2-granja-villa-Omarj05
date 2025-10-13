@@ -1,29 +1,40 @@
 import wollok.game.*
 import personaje.*
 import cultivos.*
-
+	
 program farmville {
-	//  CONFIG	
-	game.title("La granja")
-	game.height(10)
-	game.width(10)
-	game.ground("ground.png")
-
-	//  VISUALES
+	configuraciones.sobreElTablero()
+	configuraciones.sobreLasTeclas()
  	game.addVisualCharacter(hector)
 
-	//acciones
-	keyboard.m().onPressDo({ hector.sembrar( factoryMaiz.crear() )})
-	keyboard.t().onPressDo({ hector.sembrar( factoryTrigo.crear() )})
-	keyboard.o().onPressDo({ hector.sembrar( factoryTomaco.crear() )})
-	keyboard.r().onPressDo({ hector.regar() })
-	keyboard.c().onPressDo({ hector.cosechar() })
-	keyboard.v().onPressDo({ hector.venderTodoLoCosechado() })
-	keyboard.space().onPressDo({ 
-		game.say(hector, hector.mensajeSobreCantidadDeOroYPlantasCosechadas()) 
-	})
-	keyboard.a().onPressDo({hector.ponerAspersor()})
-
- 	//  COMIENZA
 	game.start()
+}
+
+object configuraciones {
+	method sobreElTablero() {
+		game.title("La granja")
+		game.height(10)
+		game.width(10)
+		game.ground("ground.png")
+	}
+
+	method sobreLasTeclas() {
+		self.sobreLaSiembraDePlantas()
+		self.sobreLasAccionesDelPersonaje()
+	}
+
+	method sobreLaSiembraDePlantas() {
+		keyboard.m().onPressDo({ hector.sembrar( plantas.nuevaPlanta(new Maiz())) })
+		keyboard.t().onPressDo({ hector.sembrar( plantas.nuevaPlanta(new Trigo())) })
+		keyboard.o().onPressDo({ hector.sembrar( plantas.nuevaPlanta(new Tomaco())) })
+	}
+
+	method sobreLasAccionesDelPersonaje() {
+		keyboard.r().onPressDo({ hector.regar() })
+		keyboard.c().onPressDo({ hector.cosechar() })
+		keyboard.v().onPressDo({ hector.venderTodoLoCosechado() })
+		keyboard.a().onPressDo({hector.ponerAspersor()})
+		keyboard.space().onPressDo({ 
+			game.say(hector, hector.mensajeSobreCantidadDeOroYPlantasCosechadas()) })
+	}
 }

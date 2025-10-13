@@ -3,7 +3,7 @@ import personaje.*
 
 class Planta {
 	var property tipoDePlanta
-	var position
+	var position = hector.position()
 	const property valor = tipoDePlanta.valor()
 
 	method valor() { return tipoDePlanta.valor() }
@@ -15,7 +15,7 @@ class Planta {
 	method image() { return tipoDePlanta.image() }
 
 	method sembrar() {
-		game.addVisual(self)
+		plantas.agregarPlantaAlJuego(self)
 	}
 
 	method regar() { self.crecer() }
@@ -26,13 +26,12 @@ class Planta {
 
 	method cosechar() {
 		if (tipoDePlanta.estaListaParaCosechar()) {
-			game.removeVisual(self)
+			plantas.eliminarPlantaDelJuego(self)
 		}
 	}
-}
+}	
 
 class Maiz {
-	var position = game.origin()
 	var property faseDeEvolucion = faseBebe
 	
 	method valor() { return 150 }
@@ -45,18 +44,18 @@ class Maiz {
 }
 
 class Trigo {
-	var property faseDeEvolucion = 0
+	var property faseDeEvolucion = estadoInicial
 	
-	method valor() { return (faseDeEvolucion -1) * 100 }
+	method valor() { return (faseDeEvolucion.nivelDelEstado() -1) * 100 }
 	
-	method image() { return "wheat_" + faseDeEvolucion + ".png" }
+	method image() { return "wheat_" + faseDeEvolucion.nivelDelEstado() + ".png" }
 
-	method proximaFaseDeEvolucion() {
-		return (faseDeEvolucion +1) * ((3 - faseDeEvolucion).max(0).min(1))
-	}
+	method proximaFaseDeEvolucion() { return faseDeEvolucion.proximaFase() }
 
 	method estaListaParaCosechar() { return faseDeEvolucion >= 2 }
 }
+
+//(faseDeEvolucion +1) * ((3 - faseDeEvolucion).max(0).min(1))
 
 class Tomaco {
 	/*ACLARACION: 
@@ -75,18 +74,55 @@ class Tomaco {
 	method estaListaParaCosechar() { return faseDeEvolucion == faseAdulta }
 }
 
+//estados del trigo
+object estadoInicial {
+	method proximaFase() { return segundoEstado }
+
+	method nivelDelEstado() { return 0 }
+}
+
+object segundoEstado {
+	method proximaFase() { return tercerEstado }
+
+	method nivelDelEstado() { return 1 }
+}
+
+object tercerEstado {
+	method proximaFase() { return ultimoEstado }
+
+	method nivelDelEstado() { return 2 }
+}
+
+object ultimoEstado {
+	method proximaFase() { return estadoInicial }
+
+	method nivelDelEstado() { return 3 }
+}
+
+
+//estados del tomaco y el maiz
 object faseBebe { method nombre() { return "baby" } }
 
 object faseAdulta { method nombre() { return "adult" } }
 
-object factoryTomaco {
-	method crear() { return new Planta(tipoDePlanta = new Tomaco(), position = hector.position())}
-}
+object plantas {
+	const property plantasSembradas = #{}
 
-object factoryTrigo {
-	method crear() { return new Planta(tipoDePlanta = new Trigo(), position = hector.position())}
-}
+	method nuevaPlanta(_tipoDePlanta) {
+		return new Planta( tipoDePlanta = _tipoDePlanta ) 
+	}
 
-object factoryMaiz {
-	method crear() { return new Planta(tipoDePlanta = new Maiz(), position = hector.position())}
+	method agregarPlantaAlJuego(planta) {
+		plantasSembradas.add(planta)
+		game.addVisual(planta)
+	}
+
+	method eliminarPlantaDelJuego(planta) {
+		plantasSembradas.remove(planta)
+		game.removeVisual(planta)
+	}
+
+	method posicionesDeTodaslasPlantas() {
+		return plantasSembradas.map({ planta => planta.position() })
+	}
 }

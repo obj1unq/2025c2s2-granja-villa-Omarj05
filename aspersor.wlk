@@ -1,5 +1,5 @@
 import personaje.*
-import wollok.game.*
+import cultivos.*
 
 class Aspersor {
     var property position = hector.position()
@@ -11,21 +11,16 @@ class Aspersor {
     }
 
     method regarAlrededor() {
-        if (self.hayPlantasLindantes()) {
-            self.plantasLindantes().forEach({planta => planta.regar()})
-        }
+        //  self.validarRiego()
+        self.plantasLindantes().forEach({planta => planta.regar()})
     }
 
     method posicionesDePlantasLindantes() {
-        return self.posicionesLindantes().filter(
-                {position => !self.esParcelaVaciaEn(position)}
-                )
-            
+        return self.posicionesLindantes().intersection(plantas.posicionesDeTodaslasPlantas())
     }
 
     method plantasLindantes() {
-        return self.posicionesDePlantasLindantes().map(
-            {position => self.plantaEn(position)})
+        return self.posicionesDePlantasLindantes().map({posicion => self.plantaEn(posicion)})
     }
 
     method hayPlantasLindantes() {
@@ -33,34 +28,16 @@ class Aspersor {
     }
 
     method posicionesLindantes() {
-        return [position.down(1), position.down(1).left(1), position.down(1).right(1),
+        return #{position.down(1), position.down(1).left(1), position.down(1).right(1),
                 position.left(1), position.right(1), position.up(1), position.up(1).left(1),
-                position.up(1).right(1)]
+                position.up(1).right(1)}
     }
 
-    method plantaEn(_position) {
-        return 
+    method plantaEn(_position) { return game.getObjectsIn(_position).get(0) }
+
+    method validarRiego() {
+        if (!self.hayPlantasLindantes()) {
+            self.error("No hay plantas para regar.")
+        }
     }
-}
-
-object detectorDePlantas {
-    var property position = game.center()
-    var plantasDetectadas = []
-
-    method revisarAlrededor() {
-        const indice = 0
-        
-        game.onTick(0, "hola", )
-    }
-
-    method plantaQueColisiona() { game.uniqueCollider(self) }
-
-    method posicionesLindantes() {
-        return [position.down(1), position.down(1).left(1), position.down(1).right(1),
-                position.left(1), position.right(1), position.up(1), position.up(1).left(1),
-                position.up(1).right(1)]
-    }
-
-
-    method esParcelaVacia() { return game.colliders(self).isEmpty() }
 }

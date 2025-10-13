@@ -30,6 +30,7 @@ object hector {
 	}
 
 	method ponerAspersor() {
+		self.validarPonerAspersor()
 		const aspersor = new Aspersor()
 		aspersor.activar()
 	}
@@ -74,6 +75,12 @@ object hector {
 	method validarCosecha() {
 		if (self.esParcelaVacia()) {
 			self.error("No tengo nada para cosechar aqui.")
+		}
+	}
+
+	method validarPonerAspersor() {
+		if (!self.esParcelaVacia()) {
+			self.error("No puedo poner un aspersor aqui.")
 		}
 	}
 }
