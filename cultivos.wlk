@@ -1,9 +1,10 @@
 import wollok.game.*
 import personaje.*
+import extras.*
 
 class Planta {
 	var property tipoDePlanta
-	var position = hector.position()
+	var property position = hector.position()
 	const property valor = tipoDePlanta.valor()
 
 	method valor() { return tipoDePlanta.valor() }
@@ -18,17 +19,15 @@ class Planta {
 		plantas.agregarPlantaAlJuego(self)
 	}
 
-	method regar() { self.crecer() }
-
-	method crecer() { 
-		tipoDePlanta.faseDeEvolucion(tipoDePlanta.proximaFaseDeEvolucion()) 
-	}
+	method regar() { tipoDePlanta.crecer(self) }
 
 	method cosechar() {
 		if (tipoDePlanta.estaListaParaCosechar()) {
 			plantas.eliminarPlantaDelJuego(self)
 		}
 	}
+
+	method esPlanta() { return true }
 }	
 
 class Maiz {
@@ -40,7 +39,9 @@ class Maiz {
 
 	method proximaFaseDeEvolucion() { return faseAdulta }
 
-	method estaListaParaCosechar() { return faseDeEvolucion == faseAdulta }
+	method crecer(planta) { faseDeEvolucion = self.proximaFaseDeEvolucion() }
+
+	method estaListaParaCosechar() { return faseDeEvolucion.puedeCosecharse() }
 }
 
 class Trigo {
@@ -52,26 +53,63 @@ class Trigo {
 
 	method proximaFaseDeEvolucion() { return faseDeEvolucion.proximaFase() }
 
-	method estaListaParaCosechar() { return faseDeEvolucion >= 2 }
+	method crecer(planta) { faseDeEvolucion = self.proximaFaseDeEvolucion() }
+
+	method estaListaParaCosechar() { return faseDeEvolucion.nivelDelEstado() >= 2 }
 }
 
 //(faseDeEvolucion +1) * ((3 - faseDeEvolucion).max(0).min(1))
 
 class Tomaco {
-	/*ACLARACION: 
-		Quise hacerlo con fase bebe y fase adulta pero si se desea que siempre esté
-		en fase	adulta hay que cambiar la variable faseDeEvolucion por una constante 
-		en faseAdulta.
-	*/
-	var property faseDeEvolucion = faseBebe
+	var property faseDeEvolucion = faseAdulta
 
 	method valor() { return 80 }
 	
 	method image() { return "tomaco_" + faseDeEvolucion.nombre() + ".png" }
 
-	method proximaFaseDeEvolucion() { return faseAdulta }
+	method proximaFaseDeEvolucion() { return faseDeEvolucion }
 
-	method estaListaParaCosechar() { return faseDeEvolucion == faseAdulta }
+	method crecer(planta) { 
+		if (self.hayParcelaLibreArribaPara(planta)) {
+			planta.position(planta.position().up(1))
+		}
+		else {
+			self.validarHayParcelaLibreEnBordeInferiorPara(planta)
+			planta.position(game.at(planta.position().x(), 0))
+		}
+	}
+
+	method hayParcelaLibreArribaPara(planta) {
+		return self.hayParcelaLibre(planta.position().up(1))
+	}
+ 
+	method hayParcelaLibre(_position) {
+		return self.hayParcela(_position) && self.esParcelaVacia(_position)
+	}
+
+	method validarHayParcelaLibreEnBordeInferiorPara(planta) {
+		if (!self.hayParcelaLibreEnBordeInferiorPara(planta)) {
+			self.error("No puedo crecer arriba.")
+		}
+	}
+
+	method hayParcelaLibreEnBordeInferiorPara(planta) {
+		return self.hayParcelaLibre(game.at(planta.position().x(), 0))
+	}
+
+	method hayParcela(_position) {
+		return _position.y().between(0, game.height()-1)
+	}
+
+	method esParcelaVacia(_position) {
+		return game.getObjectsIn(_position).isEmpty()
+	}
+
+	method hayCelda(direccion) {
+        return direccion.siguiente(self).x().between(0, game.width()-2)
+    }
+ 
+	method estaListaParaCosechar() { return faseDeEvolucion.puedeCosecharse() }
 }
 
 //estados del trigo
@@ -101,9 +139,16 @@ object ultimoEstado {
 
 
 //estados del tomaco y el maiz
-object faseBebe { method nombre() { return "baby" } }
+object faseBebe { 
+	method nombre() { return "baby" } 
+	method puedeCosecharse() { return false }	
+}
 
-object faseAdulta { method nombre() { return "adult" } }
+object faseAdulta { 
+	method nombre() { return "adult" } 
+	method puedeCosecharse() { return true }
+}
+
 
 object plantas {
 	const property plantasSembradas = #{}

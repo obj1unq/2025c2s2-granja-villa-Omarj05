@@ -59,6 +59,8 @@ object hector {
  
 	method totalAVender() { return plantasCosechadas.sum({planta => planta.valor()}) }
 
+	method esPlanta() { return false }
+
 	//validaciones
 	method validarRiego() {
 		if (self.esParcelaVacia()) {

@@ -11,7 +11,7 @@ class Aspersor {
     }
 
     method regarAlrededor() {
-        //  self.validarRiego()
+        self.validarRiego()
         self.plantasLindantes().forEach({planta => planta.regar()})
     }
 
@@ -33,7 +33,13 @@ class Aspersor {
                 position.up(1).right(1)}
     }
 
-    method plantaEn(_position) { return game.getObjectsIn(_position).get(0) }
+        method plantaEn(_position) { 
+            return game.getObjectsIn(_position).find({ algo => algo.esPlanta() }) 
+    }
+
+
+
+    method esPlanta() { return false }
 
     method validarRiego() {
         if (!self.hayPlantasLindantes()) {
